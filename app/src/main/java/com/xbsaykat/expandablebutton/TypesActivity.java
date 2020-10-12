@@ -22,18 +22,19 @@ public class TypesActivity extends AppCompatActivity {
 
         Intent intent= getIntent();
         String types= intent.getStringExtra("types");
+        String title= intent.getStringExtra("name");
 
         if(types.equals("Video")){
             Documentlayout.setVisibility(View.GONE);
             Videolayout.setVisibility(View.VISIBLE);
             textView_title=findViewById(R.id.title);
-            textView_title.setText(types);
+            textView_title.setText(title);
         }
         if(types.equals("Document")){
             Documentlayout.setVisibility(View.VISIBLE);
             Videolayout.setVisibility(View.GONE);
             textView_titledoc=findViewById(R.id.titledoc);
-            textView_titledoc.setText(types);
+            textView_titledoc.setText(title);
         }
 
 

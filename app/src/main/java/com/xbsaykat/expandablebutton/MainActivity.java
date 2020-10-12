@@ -30,13 +30,8 @@ public class MainActivity extends AppCompatActivity {
         expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
             @Override
             public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                 //Toast.makeText(getApplicationContext(),"Group Clicked " + listDataParent.get(groupPosition), Toast.LENGTH_SHORT).show();
                 String typeOfContent= listDataParent.get(groupPosition);
-                boolean isAudio= typeOfContent.indexOf("Audio")!=1?true:false;
-                if(isAudio){
-                    Toast.makeText(getApplicationContext(),listDataParent.get(groupPosition), Toast.LENGTH_SHORT).show();
-                }
-
+                CheckTypes(typeOfContent);
                 return false;
             }
         });
@@ -44,25 +39,8 @@ public class MainActivity extends AppCompatActivity {
         expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                Toast.makeText(getApplicationContext(), listDataParent.get(groupPosition) + " : " + listDataChild.get(listDataParent.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
-                String typeOfContent= listDataParent.get(groupPosition);
-                boolean isVideo= typeOfContent.indexOf("Video")!=1?true:false;
-                boolean isDocument= typeOfContent.indexOf("Document")!=1?true:false;
-                boolean isAudio= typeOfContent.indexOf("Audio")!=1?true:false;
-
-                if(isVideo){
-                    Intent intent= new Intent(MainActivity.this, TypesActivity.class);
-                    intent.putExtra("types","Video");
-                    startActivity(intent);
-                }
-                if(isDocument){
-                    Intent intent= new Intent(MainActivity.this, TypesActivity.class);
-                    intent.putExtra("types","Document");
-                    startActivity(intent);
-                }
-                if(isAudio){
-                    Toast.makeText(getApplicationContext(),listDataParent.get(groupPosition), Toast.LENGTH_SHORT).show();
-                }
+                String typeOfContent= listDataChild.get(listDataParent.get(groupPosition)).get(childPosition);
+                CheckTypes(typeOfContent);
                 return false;
             }
         });
@@ -74,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
         listDataParent.add("Chapter 1");
         listDataParent.add("Chapter 2");
         listDataParent.add("Video 3_0");
-        listDataParent.add("Document 4_0 ");
+        listDataParent.add("Document 4_0");
+        listDataParent.add("Audio 2_1");
 
         List<String> Chapter1 = new ArrayList<String>();
         Chapter1.add("Video 1_1");
@@ -89,7 +68,26 @@ public class MainActivity extends AppCompatActivity {
 
         listDataChild.put(listDataParent.get(0), Chapter1);
         listDataChild.put(listDataParent.get(1), Chapter2);
+    }
+    private void CheckTypes(String typeOfContent) {
+        boolean isVideo= typeOfContent.indexOf("Video")!=-1?true:false;
+        boolean isDocument= typeOfContent.indexOf("Document")!=-1?true:false;
+        boolean isAudio= typeOfContent.indexOf("Audio")!=-1?true:false;
 
-
+        if(isVideo){
+            Intent intent= new Intent(MainActivity.this, TypesActivity.class);
+            intent.putExtra("types","Video");
+            intent.putExtra("name",typeOfContent);
+            startActivity(intent);
+        }
+        if(isDocument){
+            Intent intent= new Intent(MainActivity.this, TypesActivity.class);
+            intent.putExtra("types","Document");
+            intent.putExtra("name",typeOfContent);
+            startActivity(intent);
+        }
+        if(isAudio){
+            Toast.makeText(getApplicationContext(),typeOfContent, Toast.LENGTH_SHORT).show();
+        }
     }
 }
