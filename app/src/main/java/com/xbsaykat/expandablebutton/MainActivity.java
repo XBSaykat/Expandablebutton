@@ -1,93 +1,66 @@
 package com.xbsaykat.expandablebutton;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ExpandableListView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.xbsaykat.expandablebutton.adapter.ParentAdapter;
+import com.xbsaykat.expandablebutton.model.Audio;
+import com.xbsaykat.expandablebutton.model.Chapter;
+import com.xbsaykat.expandablebutton.model.Document;
+import com.xbsaykat.expandablebutton.model.ViewItem;
+import com.xbsaykat.expandablebutton.model.Video;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
+import static com.xbsaykat.expandablebutton.StaticFiles.AUDIO;
+import static com.xbsaykat.expandablebutton.StaticFiles.CHAPTER;
+import static com.xbsaykat.expandablebutton.StaticFiles.DOC;
+import static com.xbsaykat.expandablebutton.StaticFiles.VIDEO;
+
+
 public class MainActivity extends AppCompatActivity {
-    ExpandableListAdapter listAdapter;
-    ExpandableListView expListView;
-    List<String> listDataParent;
-    HashMap<String, List<String>> listDataChild;
+
+    private RecyclerView recyclerView;
+    private List<ViewItem> ListItem;
+    private ParentAdapter parentAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        expListView = findViewById(R.id.explistview);
-        prepareListData();
-        listAdapter = new ExpandableListAdapter(this, listDataParent, listDataChild);
-        expListView.setAdapter(listAdapter);
-
-        expListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                String typeOfContent= listDataParent.get(groupPosition);
-                CheckTypes(typeOfContent);
-                return false;
-            }
-        });
-
-        expListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
-                String typeOfContent= listDataChild.get(listDataParent.get(groupPosition)).get(childPosition);
-                CheckTypes(typeOfContent);
-                return false;
-            }
-        });
+        recyclerView = findViewById(R.id.recyclerView);
+        LoadData();
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        parentAdapter = new ParentAdapter(ListItem, this);
+        recyclerView.setAdapter(parentAdapter);
     }
-    private void prepareListData() {
-        listDataParent = new ArrayList<String>();
-        listDataChild = new HashMap<String, List<String>>();
 
-        listDataParent.add("Chapter 1");
-        listDataParent.add("Chapter 2");
-        listDataParent.add("Video 3_0");
-        listDataParent.add("Document 4_0");
-        listDataParent.add("Audio 2_1");
+    private void LoadData() {
+        List<Video> videoItems1 = new ArrayList<>();
+        videoItems1.add(new Video(VIDEO, "Video 1_1"));
+        List<Document> docItems1 = new ArrayList<>();
+        docItems1.add(new Document(DOC, "Document 1_1", "I am Author"));
+        List<Video> videoItems1_2 = new ArrayList<>();
+        videoItems1_2.add(new Video(VIDEO, "Video 1_2"));
 
-        List<String> Chapter1 = new ArrayList<String>();
-        Chapter1.add("Video 1_1");
-        Chapter1.add("Document 1_1");
-        Chapter1.add("Video 1_2");
+        List<Document> docItems2 = new ArrayList<>();
+        docItems2.add(new Document(DOC, "Document 2_1", "I am Author"));
+        List<Video> videoItems2 = new ArrayList<>();
+        videoItems2.add(new Video(VIDEO, "Video 2_1"));
+        List<Video> videoItems2_2 = new ArrayList<>();
+        videoItems2_2.add(new Video(VIDEO, "Video 2_2"));
+        List<Audio> audioItems2 = new ArrayList<>();
+        audioItems2.add(new Audio(AUDIO, "Audio 2_1"));
 
-        List<String> Chapter2= new ArrayList<String>();
-        Chapter2.add("Document 2_1");
-        Chapter2.add("Video 2_1");
-        Chapter2.add("Video 2_2");
-        Chapter2.add("Audio 2_1");
-
-        listDataChild.put(listDataParent.get(0), Chapter1);
-        listDataChild.put(listDataParent.get(1), Chapter2);
-    }
-    private void CheckTypes(String typeOfContent) {
-        boolean isVideo= typeOfContent.indexOf("Video")!=-1?true:false;
-        boolean isDocument= typeOfContent.indexOf("Document")!=-1?true:false;
-        boolean isAudio= typeOfContent.indexOf("Audio")!=-1?true:false;
-
-        if(isVideo){
-            Intent intent= new Intent(MainActivity.this, TypesActivity.class);
-            intent.putExtra("types","Video");
-            intent.putExtra("name",typeOfContent);
-            startActivity(intent);
-        }
-        if(isDocument){
-            Intent intent= new Intent(MainActivity.this, TypesActivity.class);
-            intent.putExtra("types","Document");
-            intent.putExtra("name",typeOfContent);
-            startActivity(intent);
-        }
-        if(isAudio){
-            Toast.makeText(getApplicationContext(),typeOfContent, Toast.LENGTH_SHORT).show();
-        }
+        ListItem = new ArrayList<>();
+        ListItem.add(new Chapter(CHAPTER, "chapter 1",videoItems1,docItems1,videoItems1_2));
+        ListItem.add(new Chapter(CHAPTER, "chapter 2", docItems2, videoItems2,videoItems2_2, audioItems2));
+        ListItem.add(new Video(VIDEO, "Video 3_0"));
+        ListItem.add(new Document(DOC, "Document 4_0", "I am Author"));
     }
 }
