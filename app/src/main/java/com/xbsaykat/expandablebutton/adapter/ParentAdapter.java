@@ -173,6 +173,7 @@ public class ParentAdapter extends RecyclerView.Adapter {
         private ImageView indicator;
         private ConstraintLayout expandableLayout;
         private RecyclerView recyclerView;
+        private LinearLayout linearLayout;
 
         public ChapterViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -180,14 +181,14 @@ public class ParentAdapter extends RecyclerView.Adapter {
             indicator = itemView.findViewById(R.id.imageindicator);
             expandableLayout = itemView.findViewById(R.id.expandableLayout);
             recyclerView = itemView.findViewById(R.id.recyclerviewchild);
+            linearLayout = itemView.findViewById(R.id.toplayout);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
 
-            indicator.setOnClickListener(new View.OnClickListener() {
+            linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
                     Chapter chapter = (Chapter) parentList.get(getAdapterPosition());
                     chapter.setExpanded(!chapter.isExpanded());
                     notifyItemChanged(getAdapterPosition());
